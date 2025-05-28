@@ -1,0 +1,10 @@
+firebase_config.json
+__pycache__/
+*.pyc
+.env
+# Ignore virtual environment folders
+venv/
+env/
+
+# Ignore log files
+*.log
