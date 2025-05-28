@@ -39,6 +39,23 @@ def send_tip(message):
         bot.send_message(message.chat.id, f"Today's Hustle Tip:\n{tip}")
     else:
         bot.send_message(message.chat.id, "No tip found today!")
+@bot.message_handler(commands=['save'])
+def save_message(message):
+    try:
+        user_id = str(message.from_user.id)
+        text = message.text.replace('/save', '').strip()
 
+        if not text:
+            bot.reply_to(message, "Please provide a message to save after /save command.")
+            return
+
+        db.collection("saved_messages").add({
+            "user_id": user_id,
+            "message": text
+        })
+
+        bot.reply_to(message, "Your message has been saved!")
+    except Exception as e:
+    bot.reply_to(message, f"Error saving message: {str(e)}")
 # Start polling
 bot.polling()
