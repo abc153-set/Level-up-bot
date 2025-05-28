@@ -19,7 +19,8 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # Your Telegram Bot Token
-BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+BOT_TOKEN =
+""123456789:ABCDefGhIjkLMNOPqrSTUvwxYZ""
 bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
