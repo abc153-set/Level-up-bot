@@ -57,5 +57,21 @@ def save_message(message):
         bot.reply_to(message, "Your message has been saved!")
     except Exception as e:
     bot.reply_to(message, f"Error saving message: {str(e)}")
+@bot.message_handler(commands=['get'])
+def get_saved_messages(message):
+    try:
+        user_id = str(message.from_user.id)
+        docs = db.collection("saved_messages").where("user_id", "==", user_id).stream()
+
+        messages = [doc.to_dict().get("message", "") for doc in docs]
+
+        if messages:
+            response = "\n\n".join(messages)
+        else:
+            response = "No saved messages found."
+
+        bot.send_message(message.chat.id, response)
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Error retrieving messages: {str(e)}")
 # Start polling
 bot.polling()
