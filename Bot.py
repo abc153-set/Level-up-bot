@@ -1,3 +1,13 @@
+import json
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+with open('firebase_config.json') as f:
+    firebase_config = json.load(f)
+
+cred = credentials.Certificate(firebase_config)
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 import telebot
 import json
 import firebase_admin
