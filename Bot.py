@@ -13,8 +13,7 @@ db = firestore.client()
 import telebot
 
 # Your Telegram Bot Token
-BOT_TOKEN ="8125526527:AAEd2PVmfb1CATBCxKHzgXec6
-DXNI5ZqB1o"
+BOT_TOKEN ="8125526527:AAEd2PVmfb1CATBCxKHzgXec6DXNI5ZqB1o"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
