@@ -20,7 +20,7 @@ db = firestore.client()
 
 # Your Telegram Bot Token
 BOT_TOKEN =
-""123456789:ABCDefGhIjkLMNOPqrSTUvwxYZ""
+""8125526527:AAHdNC_9WVwf0GrtRn6Mph7cVoVEGou0PgA""
 bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=['start'])
