@@ -1,92 +1,86 @@
 import json
-import os
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+import random
+from telegram import Update, ReplyKeyboardMarkup
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
-# Load data from JSON
+DATA_FILE = "data.json"
+
+# Utility functions
 def load_data():
-    if os.path.exists("data.json"):
-        with open("data.json", "r") as f:
+    try:
+        with open(DATA_FILE, "r") as f:
             return json.load(f)
-    return {}
+    except FileNotFoundError:
+        return {}
 
-# Save data to JSON
 def save_data(data):
-    with open("data.json", "w") as f:
+    with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
-# /start command
+# Features
+hustle_tips = [
+    "💡 Tip: Wake up early and plan your top 3 goals.",
+    "🚀 Tip: Consistency beats motivation.",
+    "📈 Tip: Read for 30 mins a day to outgrow others.",
+    "💰 Tip: Track your expenses and invest the rest.",
+]
+
+affiliate_offers = [
+    "🎁 Try Audible FREE for 30 days: https://amzn.to/yourlink",
+    "🔥 Best budget mic for creators: https://amzn.to/yourlink2",
+    "📚 Read 'Atomic Habits' – Must-have: https://amzn.to/yourlink3",
+]
+
+# Commands
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = str(update.effective_user.id)
+    user = update.effective_user
     data = load_data()
-    
-    if user_id not in data:
-        data[user_id] = {"name": update.effective_user.first_name, "mood": None, "goals": []}
+    if str(user.id) not in data:
+        data[str(user.id)] = {"name": user.first_name, "mood": "", "messages": []}
         save_data(data)
+    keyboard = [["💪 Hustle Tip", "😊 Mood"], ["🎁 Offer", "❓ Help"]]
+    await update.message.reply_text(
+        f"Hi {user.first_name}, welcome to LevelUp AI Bot!\nChoose an option below:",
+        reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True),
+    )
 
-    await update.message.reply_text(f"Welcome {update.effective_user.first_name}! 👋\nI'm your LevelUp Bot — here to help you hustle, track your mood, and learn daily!")
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Use the buttons or type /start to begin again.")
 
-# /mood command
-async def mood(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = str(update.effective_user.id)
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    text = update.message.text.strip().lower()
     data = load_data()
+    uid = str(user.id)
 
-    if user_id not in data:
-        await update.message.reply_text("Please use /start first.")
-        return
+    if uid not in data:
+        data[uid] = {"name": user.first_name, "mood": "", "messages": []}
 
-    if context.args:
-        mood_value = " ".join(context.args)
-        data[user_id]["mood"] = mood_value
+    if text == "💪 hustle tip":
+        tip = random.choice(hustle_tips)
+        await update.message.reply_text(tip)
+    elif text == "🎁 offer":
+        offer = random.choice(affiliate_offers)
+        await update.message.reply_text(offer)
+    elif text == "😊 mood":
+        await update.message.reply_text("How are you feeling today? (e.g., happy, tired, focused)")
+        context.user_data["expecting_mood"] = True
+    elif context.user_data.get("expecting_mood"):
+        data[uid]["mood"] = text
         save_data(data)
-        await update.message.reply_text(f"Mood updated to: {mood_value} 😌")
+        context.user_data["expecting_mood"] = False
+        await update.message.reply_text(f"Thanks! Saved your mood: {text}")
     else:
-        await update.message.reply_text("Please share your mood like this:\n`/mood happy` or `/mood stressed`")
-
-# /goal command
-async def goal(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = str(update.effective_user.id)
-    data = load_data()
-
-    if user_id not in data:
-        await update.message.reply_text("Please use /start first.")
-        return
-
-    if context.args:
-        goal_text = " ".join(context.args)
-        data[user_id]["goals"].append(goal_text)
+        data[uid]["messages"].append(text)
         save_data(data)
-        await update.message.reply_text(f"🎯 Goal added: {goal_text}")
-    else:
-        await update.message.reply_text("Add a goal like this:\n`/goal Read 5 pages daily`")
+        await update.message.reply_text("✅ Got your message!")
 
-# /status command
-async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = str(update.effective_user.id)
-    data = load_data()
-
-    if user_id not in data:
-        await update.message.reply_text("Please use /start first.")
-        return
-
-    mood = data[user_id].get("mood", "Not set")
-    goals = data[user_id].get("goals", [])
-    goal_text = "\n- ".join(goals) if goals else "No goals set."
-
-    message = f"🧠 *Your Status:*\nMood: {mood}\nGoals:\n- {goal_text}"
-    await update.message.reply_text(message, parse_mode="Markdown")
-
-# Main function
 def main():
-    TOKEN = "8125526527:AAE-POihDYVVeiKWLmmGYvtibOk9-dl6g2M"  # 🔴 Replace this with your bot's token
-    app = ApplicationBuilder().token(TOKEN).build()
-
+    app = ApplicationBuilder().token("8125526527:AAE-POihDYVVeiKWLmmGYvtibOk9-dl6g2M").build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("mood", mood))
-    app.add_handler(CommandHandler("goal", goal))
-    app.add_handler(CommandHandler("status", status))
-
-    print("✅ Bot is running...")
+    app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    print("🤖 Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
