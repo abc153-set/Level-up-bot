@@ -1,10 +1,16 @@
-firebase_config.json
+# Ignore the local data file
+data.json
+
+# Python cache files
 __pycache__/
-*.pyc
-.env
-# Ignore virtual environment folders
+*.py[cod]
+
+# Virtual environment folder
 venv/
 env/
 
-# Ignore log files
+# Other typical ignores
 *.log
+*.sqlite3
+.DS_Store
+*.env
