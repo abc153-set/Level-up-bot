@@ -1,84 +1,92 @@
 import json
-import logging
-import pytz
-from datetime import datetime
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext, CallbackQueryHandler
-import firebase_admin_lite as firebase_admin
-from firebase_admin import credentials, firestore
+import os
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-# Initialize Firebase
-cred = credentials.Certificate("firebase_config.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+# Load data from JSON
+def load_data():
+    if os.path.exists("data.json"):
+        with open("data.json", "r") as f:
+            return json.load(f)
+    return {}
 
-# Set timezone
-tz = pytz.timezone('Asia/Kolkata')
+# Save data to JSON
+def save_data(data):
+    with open("data.json", "w") as f:
+        json.dump(data, f, indent=2)
 
-# Start command
-async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    user_data = {
-        'username': user.username,
-        'first_name': user.first_name,
-        'last_active': datetime.now(tz).isoformat()
-    }
-    db.collection('users').document(str(user.id)).set(user_data, merge=True)
+# /start command
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = str(update.effective_user.id)
+    data = load_data()
+    
+    if user_id not in data:
+        data[user_id] = {"name": update.effective_user.first_name, "mood": None, "goals": []}
+        save_data(data)
 
-    keyboard = [
-        [InlineKeyboardButton("💡 Hustle Tip", callback_data='tip')],
-        [InlineKeyboardButton("📊 Mood Tracker", callback_data='mood')],
-        [InlineKeyboardButton("📚 Micro-Learn", callback_data='learn')],
-        [InlineKeyboardButton("💰 Daily Savings", callback_data='savings')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(
-        f"👋 Hello {user.first_name}! I'm your LevelUp AI Assistant. Choose an option below:",
-        reply_markup=reply_markup
-    )
+    await update.message.reply_text(f"Welcome {update.effective_user.first_name}! 👋\nI'm your LevelUp Bot — here to help you hustle, track your mood, and learn daily!")
 
-# Callback handler
-async def button(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
-    query = update.callback_query
-    await query.answer()
-    user_id = str(query.from_user.id)
+# /mood command
+async def mood(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = str(update.effective_user.id)
+    data = load_data()
 
-    if query.data == 'tip':
-        await query.edit_message_text("💡 Hustle Tip: Stay consistent. Success follows discipline.")
-    elif query.data == 'mood':
-        moods = [
-            [InlineKeyboardButton("😊", callback_data='mood_happy')],
-            [InlineKeyboardButton("😐", callback_data='mood_neutral')],
-            [InlineKeyboardButton("😔", callback_data='mood_sad')]
-        ]
-        await query.edit_message_text("How are you feeling today?", reply_markup=InlineKeyboardMarkup(moods))
-    elif query.data.startswith('mood_'):
-        mood = query.data.split('_')[1]
-        db.collection('moods').add({
-            'user_id': user_id,
-            'mood': mood,
-            'timestamp': datetime.now(tz).isoformat()
-        })
-        await query.edit_message_text(f"Mood '{mood}' saved. ✅")
-    elif query.data == 'learn':
-        await query.edit_message_text("📚 Micro-Learn: Did you know? Consistency beats motivation every time.")
-    elif query.data == 'savings':
-        await query.edit_message_text("💰 Savings Tip: Skip one chai today and save ₹10. Small steps matter.")
+    if user_id not in data:
+        await update.message.reply_text("Please use /start first.")
+        return
 
-# Unknown text handler
-async def handle_message(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Please use the buttons to interact with me.")
+    if context.args:
+        mood_value = " ".join(context.args)
+        data[user_id]["mood"] = mood_value
+        save_data(data)
+        await update.message.reply_text(f"Mood updated to: {mood_value} 😌")
+    else:
+        await update.message.reply_text("Please share your mood like this:\n`/mood happy` or `/mood stressed`")
+
+# /goal command
+async def goal(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = str(update.effective_user.id)
+    data = load_data()
+
+    if user_id not in data:
+        await update.message.reply_text("Please use /start first.")
+        return
+
+    if context.args:
+        goal_text = " ".join(context.args)
+        data[user_id]["goals"].append(goal_text)
+        save_data(data)
+        await update.message.reply_text(f"🎯 Goal added: {goal_text}")
+    else:
+        await update.message.reply_text("Add a goal like this:\n`/goal Read 5 pages daily`")
+
+# /status command
+async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = str(update.effective_user.id)
+    data = load_data()
+
+    if user_id not in data:
+        await update.message.reply_text("Please use /start first.")
+        return
+
+    mood = data[user_id].get("mood", "Not set")
+    goals = data[user_id].get("goals", [])
+    goal_text = "\n- ".join(goals) if goals else "No goals set."
+
+    message = f"🧠 *Your Status:*\nMood: {mood}\nGoals:\n- {goal_text}"
+    await update.message.reply_text(message, parse_mode="Markdown")
 
 # Main function
 def main():
-    TOKEN = "8125526527:AAEd2PVmfb1CATBCxKHzgXec6DXNI5ZqB1o"  # replace this with your actual token
-    app = Application.builder().token(TOKEN).build()
+    TOKEN = "8125526527:AAE-POihDYVVeiKWLmmGYvtibOk9-dl6g2M"  # 🔴 Replace this with your bot's token
+    app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(button))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    app.add_handler(CommandHandler("mood", mood))
+    app.add_handler(CommandHandler("goal", goal))
+    app.add_handler(CommandHandler("status", status))
 
-    print("Bot is running...")
+    print("✅ Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
