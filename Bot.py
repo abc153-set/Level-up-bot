@@ -39,7 +39,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         data[str(user.id)] = {"name": user.first_name, "mood": "", "messages": []}
         save_data(data)
     keyboard = [["💪 Hustle Tip", "😊 Mood"], ["🎁 Offer", "❓ Help"]]
-    await update.message.reply_text(
+    await update.message.reply_text("Got your message! ✅")
         f"Hi {user.first_name}, welcome to LevelUp AI Bot!\nChoose an option below:",
         reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True),
     )
