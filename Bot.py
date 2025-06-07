@@ -3,6 +3,7 @@ from features.menu import handle_menu
 from features.mood import handle_mood
 from features.hustle import handle_hustle
 from features.offers import handle_offers
+
 import json
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
