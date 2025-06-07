@@ -14,3 +14,7 @@ env/
 *.sqlite3
 .DS_Store
 *.env
+__pycache__/
+*.pyc
+.env
+data.json
