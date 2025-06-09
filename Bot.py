@@ -1,10 +1,15 @@
-from dotenv import load_dotenv
-import os
-import json from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+import json
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup 
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-from features.start import handle_start from features.menu import handle_menu from features.mood import handle_mood, save_mood from features.hustle import handle_hustle from features.offers import handle_offers from features.stats import handle_stats
+from features.start import handle_start 
+from features.menu import handle_menu 
+from features.mood import handle_mood, save_mood 
+from features.hustle import handle_hustle 
+from features.offers import handle_offers 
+from features.stats import handle_stats
 
-TOKEN = "8125526527:AAE-POihDYVVeiKWLmmGYvtibOk9-dl6g2M"
+TOKEN = "YOUR_BOT_TOKEN_HERE" 
 DATA_FILE = "data.json"
 
 Load user data from JSON
