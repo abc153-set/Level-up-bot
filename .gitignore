@@ -1,8 +1,9 @@
 # Ignore the local data file
 data.json
 
-# Ignore environment config
+# Secrets and environment
 .env
+credentials.json
 
 # Python cache files
 __pycache__/
@@ -13,7 +14,22 @@ __pycache__/
 venv/
 env/
 
-# Other typical ignores
-*.log
-*.sqlite3
+# Editor/IDE folders and temp files
+.vscode/
+.idea/
+*.swp
+*~
+
+# System-specific files
 .DS_Store
+Thumbs.db
+
+# Logs and backups
+*.log
+*.bak
+*.tmp
+
+# Build/distribution folders
+build/
+dist/
+*.egg-info/
