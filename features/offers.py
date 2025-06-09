@@ -6,7 +6,7 @@ import json
 import random
 import os
 
-OFFERS_FILE = "offers.json"
+OFFERS_FILE = "data/offers.json"  
 
 # Load offers from JSON or fallback
 def load_offers():
