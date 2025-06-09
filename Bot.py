@@ -25,34 +25,37 @@ def save_data(data):
     with open(DATA_FILE, "w") as f: 
         json.dump(data, f, indent=2)
 
-Catch all user messages
+# Catch all user messages
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE): 
+    user = update.effective_user 
+    text = update.message.text.lower() 
+    data = load_data()
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE): user = update.effective_user text = update.message.text.lower() data = load_data()
+    if str(user.id) not in data:
+        data[str(user.id)] = {"name": user.first_name, "messages": [], "mood": ""}
 
-if str(user.id) not in data:
-    data[str(user.id)] = {"name": user.first_name, "messages": [], "mood": ""}
+    if text in ["happy", "sad", "stressed", "excited", "angry"]:
+        await save_mood(update, context, text)
+    else:
+        data[str(user.id)]["messages"].append(text)
+        await update.message.reply_text("💾 Got it! Saved your message.")
+        save_data(data)
 
-if text in ["happy", "sad", "stressed", "excited", "angry"]:
-    await save_mood(update, context, text)
-else:
-    data[str(user.id)]["messages"].append(text)
-    await update.message.reply_text("💾 Got it! Saved your message.")
-    save_data(data)
+# Main bot setup
+def main(): 
+    app = ApplicationBuilder().token(TOKEN).build()
 
-Main bot setup
+    app.add_handler(CommandHandler("start", handle_start))
+    app.add_handler(CommandHandler("menu", handle_menu))
+    app.add_handler(CommandHandler("mood", handle_mood))
+    app.add_handler(CommandHandler("hustle", handle_hustle))
+    app.add_handler(CommandHandler("offer", handle_offers))
+    app.add_handler(CommandHandler("stats", handle_stats))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-def main(): app = ApplicationBuilder().token(TOKEN).build()
+    print("✅ Bot is running...")
+    app.run_polling()
 
-app.add_handler(CommandHandler("start", handle_start))
-app.add_handler(CommandHandler("menu", handle_menu))
-app.add_handler(CommandHandler("mood", handle_mood))
-app.add_handler(CommandHandler("hustle", handle_hustle))
-app.add_handler(CommandHandler("offer", handle_offers))
-app.add_handler(CommandHandler("stats", handle_stats))
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-print("✅ Bot is running...")
-app.run_polling()
-
-if name == "main": main()
+if __name__ == "main": 
+    main()
 
