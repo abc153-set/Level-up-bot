@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+import os
 import json
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup 
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
@@ -9,7 +11,15 @@ from features.hustle import handle_hustle
 from features.offers import handle_offers 
 from features.stats import handle_stats
 
-TOKEN = "YOUR_BOT_TOKEN_HERE" 
+# ✅ Load token securely from .env file
+load_dotenv()
+TOKEN = os.getenv("BOT_TOKEN")
+
+# 🚨 Raise error if token not found
+if not TOKEN:
+    raise ValueError("❌ BOT_TOKEN 
+not found in .env file!")
+
 DATA_FILE = "data.json"
 
 # Load user data from JSON
