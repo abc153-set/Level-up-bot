@@ -12,13 +12,18 @@ from features.stats import handle_stats
 TOKEN = "YOUR_BOT_TOKEN_HERE" 
 DATA_FILE = "data.json"
 
-Load user data from JSON
+# Load user data from JSON
+def load_data(): 
+    try: 
+        with open(DATA_FILE, "r") as f: 
+            return json.load(f) 
+    except FileNotFoundError: 
+        return {}
 
-def load_data(): try: with open(DATA_FILE, "r") as f: return json.load(f) except FileNotFoundError: return {}
-
-Save user data to JSON
-
-def save_data(data): with open(DATA_FILE, "w") as f: json.dump(data, f, indent=2)
+# Save user data to JSON
+def save_data(data): 
+    with open(DATA_FILE, "w") as f: 
+        json.dump(data, f, indent=2)
 
 Catch all user messages
 
