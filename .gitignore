@@ -1,11 +1,15 @@
 # Ignore the local data file
 data.json
 
+# Ignore environment config
+.env
+
 # Python cache files
 __pycache__/
 *.py[cod]
+*.pyc
 
-# Virtual environment folder
+# Virtual environment folders
 venv/
 env/
 
@@ -13,8 +17,3 @@ env/
 *.log
 *.sqlite3
 .DS_Store
-*.env
-__pycache__/
-*.pyc
-.env
-data.json
