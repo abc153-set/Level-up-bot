@@ -6,15 +6,20 @@ import json
 import random
 import os
 
+from features.analytics import 
+track_command
+
 OFFERS_FILE = "data/offers.json"  
 
 # Load offers from JSON or fallback
 def load_offers():
     if os.path.exists(OFFERS_FILE):
         try:
-            with open(OFFERS_FILE, "r") as f:
+            with open(OFFERS_FILE, 
+"r") as f:
                 offers = json.load(f)
-                if isinstance(offers, list) and offers:
+                if isinstance(offers,
+list) and offers:
                     return offers
         except json.JSONDecodeError:
             pass
@@ -28,7 +33,12 @@ def load_offers():
     ]
 
 # /offer command handler
-async def handle_offers(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def handle_offers(update:
+Update, context: 
+ContextTypes.DEFAULT_TYPE):
+    track_command("hustle", 
+update.effective_user)
+    
     offers = load_offers()
     offer = random.choice(offers)
 
