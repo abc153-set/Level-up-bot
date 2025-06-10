@@ -8,7 +8,8 @@ DATA_FILE = "data/quotes.json"
 
 def load_data():
     try:
-        with open(DATA_FILE, "r") as f:
+        with open(DATA_FILE, "r") as 
+f:
             return json.load(f)
     except FileNotFoundError:
         return {}
