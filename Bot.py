@@ -10,6 +10,7 @@ from features.mood import handle_mood, save_mood
 from features.hustle import handle_hustle 
 from features.offers import handle_offers 
 from features.stats import handle_stats
+from analytics import get_top_users, get_common_moods
 
 # ✅ Load token securely from .env file
 load_dotenv()
@@ -50,7 +51,37 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         data[str(user.id)]["messages"].append(text)
         await update.message.reply_text("💾 Got it! Saved your message.")
         save_data(data)
+ADMIN_IDS = [1234567890]  # 👈 Yaha apna 10-digit Telegram user ID likho
 
+async def analytics_handler(update:
+Update, context: 
+ContextTypes.DEFAULT_TYPE):
+    user_id = 
+update.effective_user.id
+    if user_id not in ADMIN_IDS:
+        await 
+update.message.reply_text("⛔ You are 
+not authorized to view analytics.")
+        return
+
+    top_users = get_top_users()
+    mood_stats = get_common_moods()
+
+    msg = "📊 *Bot Analytics*\n\n"
+    msg += "🏆 *Top Users:*\n"
+    for name, count in top_users:
+        msg += f"• {name}: {count} 
+msgs\n"
+
+    msg += "\n😀 *Most Common 
+Moods:*\n"
+    for mood, count in mood_stats:
+        msg += f"• {mood}: {count}\n"
+
+    await 
+update.message.reply_text(msg, 
+parse_mode="Markdown")
+    
 # Main bot setup
 def main(): 
     app = ApplicationBuilder().token(TOKEN).build()
