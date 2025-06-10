@@ -22,19 +22,24 @@ def save_data(data):
 
 async def handle_start(update:
 Update, context:
-    ContextTypes.DEFAULT_TYPE):
-        user = update.effective_user
-        data = load_data()
+ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    data = load_data()
     
-        track_command("start", user)
+    track_command("start", user)
     
-        if str(user.id) not in data:
-            data[str(user.id)] = {"name": user.first_name, "messages": [], "mood": ""}
+    if str(user.id) not in data:
+        data[str(user.id)] = {"name": 
+user.first_name, "messages": [],
+"mood": ""}
 
     save_data(data)
 
-    keyboard = [["/mood", "/hustle"], ["/offer", "/stats", "/help"]]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    keyboard = [["/mood", "/hustle"], 
+["/offer", "/stats", "/help"]]
+    reply_markup = 
+ReplyKeyboardMarkup(keyboard,
+resize_keyboard=True)
 
     await update.message.reply_text(
         f"Hey {user.first_name} 👋\n\nWelcome to *LevelUp AI Bot* 🚀\n\n"
