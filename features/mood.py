@@ -4,6 +4,9 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import json
 
+from features.analytics import 
+track_command
+
 DATA_FILE = "data/quotes.json"
 
 def load_data():
@@ -19,7 +22,10 @@ def save_data(data):
         json.dump(data, f, indent=2)
 
 # /mood command handler
-async def handle_mood(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def handle_mood(update: Update,
+context: ContextTypes.DEFAULT_TYPE):
+    track_command("mood", 
+update.effective_user)
     await update.message.reply_text(
         "💭 How are you feeling today?\n\n"
         "Reply with a word like: happy, sad, stressed, excited, angry, etc.\n"
@@ -27,12 +33,16 @@ async def handle_mood(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 # Called when user replies with a mood word
-async def save_mood(update: Update, context: ContextTypes.DEFAULT_TYPE, mood_text: str):
+async def save_mood(update: Update, 
+context: ContextTypes.DEFAULT_TYPE, 
+mood_text: str):
     user = update.effective_user
     data = load_data()
 
     if str(user.id) not in data:
-        data[str(user.id)] = {"name": user.first_name, "messages": [], "mood": ""}
+        data[str(user.id)] = {"name": 
+user.first_name, "messages": [],
+"mood": ""}
 
     data[str(user.id)]["mood"] = {
     "type": mood,
@@ -40,11 +50,11 @@ async def save_mood(update: Update, context: ContextTypes.DEFAULT_TYPE, mood_tex
 }
 save_data(data)
 
-    emoji_map = {
-        "happy": "😄", "sad": "😢", "stressed": "😣",
-        "excited": "🤩", "angry": "😡", "tired": "😴"
-    }
-    emoji = emoji_map.get(mood_text, "🧠")
+emoji_map = {
+    "happy": "😄", "sad": "😢", "stressed": "😣",
+    "excited": "🤩", "angry": "😡", "tired": "😴"
+}
+emoji =emoji_map.get(mood_text, "🧠")
 
     await update.message.reply_text(
         f"✅ Mood saved: *{mood_text}* {emoji}\n"
