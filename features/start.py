@@ -4,6 +4,9 @@ from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
 import json
 
+from features.analytics import
+track_command
+
 DATA_FILE = "data.json"
 
 def load_data():
@@ -17,12 +20,16 @@ def save_data(data):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
-async def handle_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    data = load_data()
-
-    if str(user.id) not in data:
-        data[str(user.id)] = {"name": user.first_name, "messages": [], "mood": ""}
+async def handle_start(update:
+Update, context:
+    ContextTypes.DEFAULT_TYPE):
+        user = update.effective_user
+        data = load_data()
+    
+        track_command("start", user)
+    
+        if str(user.id) not in data:
+            data[str(user.id)] = {"name": user.first_name, "messages": [], "mood": ""}
 
     save_data(data)
 
