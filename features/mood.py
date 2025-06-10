@@ -4,7 +4,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import json
 
-DATA_FILE = "data.json"
+DATA_FILE = "data/quotes.json"
 
 def load_data():
     try:
