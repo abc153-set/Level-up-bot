@@ -3,7 +3,8 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
 
-from features.analytics import track_command
+from features.analytics import
+track_command
 
 async def handle_menu(update: Update, 
 context: ContextTypes.DEFAULT_TYPE):
