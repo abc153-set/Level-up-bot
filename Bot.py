@@ -51,7 +51,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         data[str(user.id)]["messages"].append(text)
         await update.message.reply_text("💾 Got it! Saved your message.")
         save_data(data)
-ADMIN_IDS = [1234567890]  # 👈 Yaha apna 10-digit Telegram user ID likho
+ADMIN_IDS = [6798893796]  # 👈 Yaha apna 10-digit Telegram user ID likho
 
 async def analytics_handler(update:
 Update, context: 
