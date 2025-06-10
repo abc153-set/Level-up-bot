@@ -3,9 +3,17 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
 
-async def handle_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [["/mood", "/hustle"], ["/offer", "/stats", "/help"]]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+from features.analytics import track_command
+
+async def handle_menu(update: Update, 
+context: ContextTypes.DEFAULT_TYPE):
+    track_command("menu", 
+update.effective_user)
+    keyboard = [["/mood", "/hustle"], 
+["/offer", "/stats", "/help"]]
+    reply_markup = 
+ReplyKeyboardMarkup(keyboard, 
+resize_keyboard=True)
 
     await update.message.reply_text(
         "📋 *Main Menu*\n\n"
