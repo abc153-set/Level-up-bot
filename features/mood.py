@@ -14,7 +14,7 @@ def load_data():
         return {}
 
 def save_data(data):
-    with open(DATA_FILE, "w") as f:
+    with open("data.json", "w") as f:
         json.dump(data, f, indent=2)
 
 # /mood command handler
