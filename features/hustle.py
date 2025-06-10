@@ -6,13 +6,13 @@ import json
 import random
 import os
 
-TIPS_FILE = "hustle_tips.json"
+TIPS_FILE = "data/hustle_tips.json"
 
 # Load tips from JSON file (fallback if not found)
 def load_tips():
     if os.path.exists(TIPS_FILE):
         try:
-            with open(TIPS_FILE, "r") as f:
+            with open("data/hustle_tips.json, "r") as f:
                 tips = json.load(f)
                 if isinstance(tips, list) and tips:
                     return tips
