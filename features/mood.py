@@ -33,8 +33,11 @@ async def save_mood(update: Update, context: ContextTypes.DEFAULT_TYPE, mood_tex
     if str(user.id) not in data:
         data[str(user.id)] = {"name": user.first_name, "messages": [], "mood": ""}
 
-    data[str(user.id)]["mood"] = mood_text
-    save_data(data)
+    data[str(user.id)]["mood"] = {
+    "type": mood,
+    "message": mood_text
+}
+save_data(data)
 
     emoji_map = {
         "happy": "😄", "sad": "😢", "stressed": "😣",
