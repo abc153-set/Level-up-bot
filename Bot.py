@@ -92,6 +92,7 @@ def main():
     app.add_handler(CommandHandler("hustle", handle_hustle))
     app.add_handler(CommandHandler("offer", handle_offers))
     app.add_handler(CommandHandler("stats", handle_stats))
+    app.add_handler(CommandHandler("analytics", analytics_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     print("✅ Bot is running...")
