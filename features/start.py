@@ -42,7 +42,7 @@ ReplyKeyboardMarkup(keyboard,
 resize_keyboard=True)
 
     await update.message.reply_text(
-        f"Hey {user.first_name} 👋
+        f"""Hey {user.first_name} 👋
 \n\n
         Welcome to *LevelUp AI Bot* 🚀
 \n\n"
