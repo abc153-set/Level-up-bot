@@ -56,8 +56,10 @@ emoji_map = {
 }
 emoji =emoji_map.get(mood_text, "🧠")
 
-    await update.message.reply_text(
-        f"✅ Mood saved: *{mood_text}* {emoji}\n"
-        f"I'm here if you need a boost, {user.first_name}!",
-        parse_mode="Markdown"
-        )
+await update.message.reply_text(
+    f"✅ Mood saved: \\*{mood_text}\
+    \* {emoji}\n"
+    f"I\\'m here if you need a boost\
+    \, {user.first_name}!",
+    parse_mode="MarkdownV2"
+)
