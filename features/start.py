@@ -41,9 +41,10 @@ user.first_name, "messages": [],
 ReplyKeyboardMarkup(keyboard,
 resize_keyboard=True)
 
-await update.message.reply_text(
-    f"Hey {user.first_name} 👋
-\n\nWelcome to *LevelUp AI Bot* 🚀
+    await update.message.reply_text(
+        f"Hey {user.first_name} 👋
+\n\n
+        Welcome to *LevelUp AI Bot* 🚀
 \n\n"
     "I\\'m here to guide your mood,
 motivate you daily, and save your
