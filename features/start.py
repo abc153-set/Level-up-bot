@@ -42,15 +42,14 @@ ReplyKeyboardMarkup(keyboard,
 resize_keyboard=True)
 
     await update.message.reply_text(
-        f"""Hey {user.first_name} 👋
-\n\n
-        Welcome to *LevelUp AI Bot* 🚀
-\n\n"
+        f"""Hey {user.first_name} 👋\\n\
+    \n
+    Welcome to *LevelUp AI Bot* 🚀\\n\\n"
     "I\\'m here to guide your mood,
-motivate you daily, and save your
-time & money\\! 💡\n\n"
+    motivate you daily, and save your
+    time & money\\! 💡\n\n"
     "👇 Choose an option from the 
-keyboard below:",
+    keyboard below:",
     reply_markup=reply_markup,
     parse_mode="MarkdownV2"
     )
