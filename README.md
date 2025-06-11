@@ -128,3 +128,46 @@ PRs and suggestions welcome. Let’s build something awesome together!
 ## 🪪 License
 
 MIT License – Use freely, credit appreciated.
+Features Overview (Updated)
+
+✅ Mood Tracking with Emojis — User ka mood detect kar ke emoji ke saath save hota hai.
+
+📊 User Analytics — Track karta hai top active users aur unke interactions (offline JSON based).
+
+✨ MarkdownV2 Formatting — Telegram messages mein stylish formatting ke liye MarkdownV2 ka use.
+
+💬 Emotionally Intelligent Responses — Bot baat karta hai jaise ek close friend ho.
+
+🔌 Offline JSON Storage — Firebase-free, local data system using .json files.
+
+
+
+---
+
+📈 Analytics Module
+
+Automatically tracks:
+
+Total messages sent by each user.
+
+Most active users (used in /stats command).
+
+
+Stored safely in data/user_data.json.
+
+
+
+---
+
+🧾 MarkdownV2 Usage
+
+Used for:
+
+Bold/Italic mood messages.
+
+User names and emojis in responses.
+
+Ensures clean, human-readable formatting.
+
+
+> ⚠️ MarkdownV2 is currently used only in mood-related responses. Other modules use plain text for simplicity and stability.
